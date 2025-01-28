@@ -9,6 +9,8 @@ interface GlobalContextType {
 	setAmount: (value: number) => void;
 	category: string;
 	setCategory: (value: string) => void;
+	label: string;
+	setLabel: (value: string) => void;
 	handleAddTransaction: () => void;
 	transactions: TransactionType[];
 }
@@ -17,6 +19,7 @@ interface TransactionType {
 	id: number;
 	details: string;
 	amount: number;
+	label: string;
 	category: string;
 }
 
@@ -26,7 +29,8 @@ const GlobalState = ({ children }: { children: ReactNode }) => {
 	// state management
 	const [details, setDetails] = useState('');
 	const [amount, setAmount] = useState(0);
-	const [category, setCategory] = useState('income');
+	const [category, setCategory] = useState('');
+	const [label, setLabel] = useState('');
 	const [transactions, setTransactions] = useState<TransactionType[]>([]);
 
 	const handleAddTransaction = () => {
@@ -35,16 +39,17 @@ const GlobalState = ({ children }: { children: ReactNode }) => {
 			details: details,
 			amount: formatAmount(amount),
 			category: category,
+			label: label,
 		};
 
 		setTransactions([...transactions, newTransaction]);
 
-		console.log('type amount ', typeof formatAmount(amount));
+		console.log('list of transact', transactions);
 
 		// Reset the form
 		setAmount(0);
 		setDetails('');
-		setCategory('income');
+		setCategory('');
 	};
 
 	return (
@@ -58,6 +63,8 @@ const GlobalState = ({ children }: { children: ReactNode }) => {
 				setCategory,
 				handleAddTransaction,
 				transactions,
+				label,
+				setLabel,
 			}}
 		>
 			{children}

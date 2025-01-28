@@ -10,10 +10,10 @@ const Summary = () => {
 	const { transactions } = context;
 
 	const expenses = transactions.filter(
-		(transaction) => transaction.category === 'expense'
+		(transaction) => transaction.label === 'expense'
 	);
 	const income = transactions.filter(
-		(transaction) => transaction.category === 'income'
+		(transaction) => transaction.label === 'income'
 	);
 
 	const totalExpenses = expenses.reduce((acc, item) => acc + item.amount, 0);

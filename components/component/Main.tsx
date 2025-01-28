@@ -1,7 +1,8 @@
 'use client';
 
-import AddTransaction from './AddTransaction';
-import FormTransaction from './FormTransaction';
+import AddTransaction from '../AddTransactDialog/AddTransaction';
+import { SelectCategory } from '../AddTransactDialog/SelectCategory';
+
 import { PieSummary } from './PieChart';
 import Summary from './Summary';
 
@@ -18,7 +19,7 @@ const Main = () => {
 				<PieSummary />
 			</div>
 			<div>
-				<FormTransaction />
+				<SelectCategory />
 			</div>
 		</div>
 	);

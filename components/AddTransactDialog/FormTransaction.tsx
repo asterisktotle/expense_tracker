@@ -15,41 +15,50 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Label } from '@/components/ui/label';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { GlobalContext } from '../context/GlobalContext';
+import { SelectCategory } from './SelectCategory';
 
 const formSchema = z.object({
 	details: z.string().min(1, { message: 'Details are required' }),
 	amount: z.number().min(0.01, { message: 'Amount must be greater than 0' }),
-	category: z.enum(['income', 'expense'], {
-		required_error: 'Category is required',
-	}),
+	// category: z.enum(['income', 'expense'], {
+	// 	required_error: 'Category is required',
+	// }),
 });
 
 interface FormTransactionProps {
 	onSubmitSuccess: (isValid: boolean) => void;
+	transactLabel: string;
 }
 
-export default function FormTransaction({ onSubmitSuccess }) {
+export default function FormTransaction({
+	onSubmitSuccess,
+	transactLabel,
+}: FormTransactionProps) {
 	const context = useContext(GlobalContext);
 
 	if (!context) {
 		throw new Error('AddTransaction must be used within a GlobalProvider');
 	}
 
-	const handleSubmit = (data: z.infer<typeof formSchema>) => {
+	// this is inside the handleSubmit
+	// data: z.infer<typeof formSchema>
+	const handleSubmit = () => {
 		onSubmitSuccess(true);
-		console.log(data);
+		handleAddTransaction();
+
+		console.log('this is data', transactions);
 	};
 
 	const {
 		setDetails,
 		details,
-		setCategory,
-		category,
+		handleAddTransaction,
 		setAmount,
 		amount,
-		handleAddTransaction,
+		transactions,
+		setLabel,
 	} = context;
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -60,8 +69,16 @@ export default function FormTransaction({ onSubmitSuccess }) {
 		},
 	});
 
+	useEffect(() => {
+		if (transactLabel === 'expense') {
+			setLabel('expense');
+		} else if (transactLabel === 'income') {
+			setLabel('income');
+		}
+	}, [transactLabel]);
+
 	return (
-		<div className="flex flex-col gap-2">
+		<div className="flex flex-col">
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(handleSubmit)}>
 					<FormField
@@ -112,7 +129,7 @@ export default function FormTransaction({ onSubmitSuccess }) {
 						}}
 					/>
 
-					<FormField
+					{/* <FormField
 						control={form.control}
 						name="category"
 						render={({ field }) => {
@@ -142,12 +159,40 @@ export default function FormTransaction({ onSubmitSuccess }) {
 								</FormItem>
 							);
 						}}
-					/>
+					/> */}
 
-					<Button type="submit" className="w-full">
-						{' '}
-						Submit
-					</Button>
+					{/* TODO: MAKE THIS INCLUDE IN SCHEMA */}
+					<div>
+						<FormLabel>Category </FormLabel>
+						<SelectCategory />
+					</div>
+
+					{/* <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <FormControl>
+                  <SelectCategory
+                    value={field.value}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      setCategory?.(value);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+
+					<div className="mt-3">
+						<Button type="submit" className="w-full">
+							{' '}
+							Submit
+						</Button>
+					</div>
 				</form>
 			</Form>
 		</div>
