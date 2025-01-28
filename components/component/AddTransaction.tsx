@@ -1,5 +1,5 @@
 'use client';
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	Dialog,
@@ -11,61 +11,30 @@ import {
 	DialogTrigger,
 	DialogDescription,
 } from '@/components/ui/dialog';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { GlobalContext } from '../context/GlobalContext';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from '@/components/ui/form';
 
-// FORM ERROR MESSAGE
-const formSchema = z.object({
-	details: z.string().nonempty({
-		message: 'Please enter a description',
-	}),
-	amount: z.number().positive({
-		message: 'Please enter a valid amount',
-	}),
-});
+import { GlobalContext } from '../context/GlobalContext';
+
+import FormTransaction from './FormTransaction';
 
 export default function AddTransaction() {
-	const context = useContext(GlobalContext);
+	const closeDialogRef = useRef<HTMLButtonElement>(null);
+	// const { addTransaction } = useContext(GlobalContext);
 
-	if (!context) {
-		throw new Error('AddTransaction must be used within a GlobalProvider');
-	}
+	// const handleAddTransaction = (formData) => {
+	// 	addTransaction({
+	// 		id: Date.now(),
+	// 		details: formData.details,
+	// 		amount: formData.amount,
+	// 		category: formData.category,
+	// 		date: new Date(),
+	// 	});
+	// };
 
-	const {
-		setDetails,
-		details,
-		setCategory,
-		category,
-		setAmount,
-		amount,
-		handleAddTransaction,
-	} = context;
-
-	// FORM DEFAULT VALUES
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
-		defaultValues: {
-			details: '',
-			amount: 0,
-		},
-	});
-
-	const handleSubmit = () => {
-		console.log('submitted');
+	const handleFormSubmit = (isValid: boolean) => {
+		if (isValid) {
+			// handleAddTransaction();
+			closeDialogRef.current?.click();
+		}
 	};
 
 	return (
@@ -83,104 +52,68 @@ export default function AddTransaction() {
 					<DialogTitle>Add New Transaction</DialogTitle>
 					<DialogDescription>{null}</DialogDescription>
 				</DialogHeader>
-
-				{/* <div className="flex flex-col">
-					<div>
-						<Label htmlFor="transact-details" className="text-right">
-							Enter Description
-						</Label>
-						<Input
-							required
-							id="transact-details"
-							type="text"
-							value={details}
-							placeholder="Add details"
-							onChange={(e) => setDetails(e.target.value)}
-							className="col-span-3"
-						/>
-					</div>
-					<div>
-						<Label htmlFor="amount" className="text-right">
-							Enter Amount
-						</Label>
-						<Input
-							required
-							id="amount"
-							onChange={(e) => setAmount(e.target.value)}
-							value={amount}
-							type="number"
-							className="col-span-3"
-						/>
-					</div>
-
-					<div></div>
-				</div> */}
-
-				<div className="flex flex-col gap-2">
-					<Form {...form}>
-						<form onSubmit={form.handleSubmit(handleSubmit)}>
-							<FormField
-								control={form.control}
-								name="details"
-								render={({ field }) => {
-									return (
-										<FormItem>
-											<FormLabel>Details</FormLabel>
-											<FormControl>
-												<Input {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									);
-								}}
-							/>
-							<FormField
-								control={form.control}
-								name="amount"
-								render={({ field }) => {
-									return (
-										<FormItem>
-											<FormLabel>Amount</FormLabel>
-											<FormControl>
-												<Input type="number" {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									);
-								}}
-							/>
-
-							<div>
-								<RadioGroup
-									className="flex"
-									defaultValue={category}
-									onValueChange={(value) => setCategory(value)}
-								>
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem value="income" id="r1" />
-										<Label htmlFor="r1">Income</Label>
-									</div>
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem value="expense" id="r2" />
-										<Label htmlFor="r2">Expense</Label>
-									</div>
-								</RadioGroup>
-
-								<DialogFooter>
-									<DialogClose onClick={handleAddTransaction}>
-										<Button
-											className="bg-green-500 font-thin text-white p-2 rounded-sm w-full "
-											type="submit"
-										>
-											Save Transaction
-										</Button>
-									</DialogClose>
-								</DialogFooter>
-							</div>
-						</form>
-					</Form>
-				</div>
+				<FormTransaction onSubmitSuccess={handleFormSubmit} />
+				<DialogClose ref={closeDialogRef} className="hidden" />
 			</DialogContent>
 		</Dialog>
 	);
+}
+
+// this is under the dialog header
+{
+	/* <div className="flex flex-col">
+<Label htmlFor="transact-details" className="text-right">
+	Enter Description
+</Label>
+<Input
+	required
+	id="transact-details"
+	type="text"
+	value={details}
+	placeholder="Add details"
+	onChange={(e) => setDetails(e.target.value)}
+	className="col-span-3"
+/>
+</div>
+<div>
+<Label htmlFor="amount" className="text-right">
+	Enter Amount
+</Label>
+<Input
+	required
+	id="amount"
+	onChange={(e) => setAmount(e.target.value)}
+	value={amount}
+	type="number"
+	className="col-span-3"
+/>
+</div>
+
+<div className="flex flex-col gap-2">
+<RadioGroup
+	className="flex"
+	defaultValue={category}
+	onValueChange={(value) => setCategory(value)}
+>
+	<div className="flex items-center space-x-2">
+		<RadioGroupItem value="income" id="r1" />
+		<Label htmlFor="r1">Income</Label>
+	</div>
+	<div className="flex items-center space-x-2">
+		<RadioGroupItem value="expense" id="r2" />
+		<Label htmlFor="r2">Expense</Label>
+	</div>
+</RadioGroup>
+
+<DialogFooter>
+	<DialogClose onClick={handleAddTransaction}>
+		<Button
+			className="bg-green-500 font-thin text-white p-2 rounded-sm w-full "
+			type="submit"
+		>
+			Save Transaction
+		</Button>
+	</DialogClose>
+</DialogFooter>
+</div> */
 }
