@@ -11,21 +11,19 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { Label } from '@/components/ui/label';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { GlobalContext } from '../context/GlobalContext';
 import { SelectCategory } from './SelectCategory';
-
+import { CategoryType } from '../category/categorytype';
 const formSchema = z.object({
 	details: z.string().min(1, { message: 'Details are required' }),
 	amount: z.number().min(0.01, { message: 'Amount must be greater than 0' }),
-	// category: z.enum(['income', 'expense'], {
-	// 	required_error: 'Category is required',
-	// }),
+	category: z.string().min(1, { message: 'Select a category' }),
 });
+
+type FormData = z.infer<typeof formSchema>;
 
 interface FormTransactionProps {
 	onSubmitSuccess: (isValid: boolean) => void;
@@ -42,15 +40,6 @@ export default function FormTransaction({
 		throw new Error('AddTransaction must be used within a GlobalProvider');
 	}
 
-	// this is inside the handleSubmit
-	// data: z.infer<typeof formSchema>
-	const handleSubmit = () => {
-		onSubmitSuccess(true);
-		handleAddTransaction();
-
-		console.log('this is data', transactions);
-	};
-
 	const {
 		setDetails,
 		details,
@@ -59,23 +48,30 @@ export default function FormTransaction({
 		amount,
 		transactions,
 		setLabel,
+		setCategory,
 	} = context;
+
+	const handleSubmit = (data: FormData) => {
+		setLabel(transactLabel);
+		handleAddTransaction({
+			details: data.details,
+			amount: data.amount,
+			category: data.category,
+			label: transactLabel,
+		});
+		onSubmitSuccess(true);
+
+		console.log('this is data', transactions);
+	};
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			details: '',
 			amount: 0,
+			category: '',
 		},
 	});
-
-	useEffect(() => {
-		if (transactLabel === 'expense') {
-			setLabel('expense');
-		} else if (transactLabel === 'income') {
-			setLabel('income');
-		}
-	}, [transactLabel]);
 
 	return (
 		<div className="flex flex-col">
@@ -86,7 +82,7 @@ export default function FormTransaction({
 						name="details"
 						render={({ field }) => {
 							return (
-								<FormItem>
+								<FormItem className="flex flex-col mb-5">
 									<FormLabel>Details</FormLabel>
 									<FormControl>
 										<Input
@@ -108,7 +104,7 @@ export default function FormTransaction({
 						name="amount"
 						render={({ field }) => {
 							return (
-								<FormItem>
+								<FormItem className="flex flex-col mb-5">
 									<FormLabel>Amount</FormLabel>
 									<FormControl>
 										<Input
@@ -129,63 +125,26 @@ export default function FormTransaction({
 						}}
 					/>
 
-					{/* <FormField
+					<FormField
 						control={form.control}
 						name="category"
-						render={({ field }) => {
-							return (
-								<FormItem>
-									<FormLabel>Category</FormLabel>
-									<FormControl>
-										<RadioGroup
-											className="flex"
-											value={field.value}
-											onValueChange={(value) => {
-												field.onChange(value);
-												setCategory(value);
-											}}
-										>
-											<div className="flex items-center space-x-2">
-												<RadioGroupItem value="income" id="r1" />
-												<Label htmlFor="r1">Income</Label>
-											</div>
-											<div className="flex items-center space-x-2">
-												<RadioGroupItem value="expense" id="r2" />
-												<Label htmlFor="r2">Expense</Label>
-											</div>
-										</RadioGroup>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							);
-						}}
-					/> */}
-
-					{/* TODO: MAKE THIS INCLUDE IN SCHEMA */}
-					<div>
-						<FormLabel>Category </FormLabel>
-						<SelectCategory />
-					</div>
-
-					{/* <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Category</FormLabel>
-                <FormControl>
-                  <SelectCategory
-                    value={field.value}
-                    onChange={(value) => {
-                      field.onChange(value);
-                      setCategory?.(value);
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
+						render={({ field }) => (
+							<FormItem className="flex flex-col mb-5">
+								<FormLabel>Category</FormLabel>
+								<FormControl>
+									<SelectCategory
+										label={transactLabel}
+										value={field.value as CategoryType | ''}
+										onChange={(value: CategoryType) => {
+											field.onChange(value);
+											setCategory(value);
+										}}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
 
 					<div className="mt-3">
 						<Button type="submit" className="w-full">

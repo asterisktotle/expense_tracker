@@ -1,7 +1,6 @@
 'use client';
 
 import AddTransaction from '../AddTransactDialog/AddTransaction';
-import { SelectCategory } from '../AddTransactDialog/SelectCategory';
 
 import { PieSummary } from './PieChart';
 import Summary from './Summary';
@@ -17,9 +16,6 @@ const Main = () => {
 			<div className="flex  flex-col gap-3 items-center ">
 				<Summary />
 				<PieSummary />
-			</div>
-			<div>
-				<SelectCategory />
 			</div>
 		</div>
 	);

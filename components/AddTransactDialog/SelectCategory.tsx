@@ -1,51 +1,57 @@
-'use client';
-import { useContext } from 'react';
+// 'use client';
+// import { useContext } from 'react';
 
 import {
 	Select,
 	SelectContent,
 	SelectGroup,
 	SelectItem,
-	SelectLabel,
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { GlobalContext } from '../context/GlobalContext';
 
-export function SelectCategory() {
-	const context = useContext(GlobalContext);
+import { CategoryType } from '../category/categorytype';
 
-	if (!context) {
-		throw new Error('SelectCategory must be within GlobalContextProvider');
-	}
+interface SelectCategoryType {
+	onChange: (value: CategoryType) => void;
+	value: CategoryType | '';
+	label: string;
+}
 
-	const { setCategory } = context;
-
-	const handleOnChange = (value) => {
-		setCategory(value);
-	};
-
+export function SelectCategory({ onChange, value, label }: SelectCategoryType) {
 	return (
-		<Select onValueChange={handleOnChange}>
+		<Select
+			onValueChange={(val) => onChange(val as CategoryType)}
+			value={value}
+		>
 			<SelectTrigger className="w-[180px]">
 				<SelectValue placeholder="Select a category" />
 			</SelectTrigger>
 			<SelectContent>
-				<SelectGroup>
-					<SelectLabel>Category</SelectLabel>
-					<SelectItem value="food">Food</SelectItem>
-					<SelectItem value="social-life">Social Life</SelectItem>
-					<SelectItem value="pets">Pets</SelectItem>
-					<SelectItem value="transport">Transport</SelectItem>
-					<SelectItem value="culture">Culture</SelectItem>
-					<SelectItem value="household">Household</SelectItem>
-					<SelectItem value="apparel">Apparel</SelectItem>
-					<SelectItem value="beauty">Beauty</SelectItem>
-					<SelectItem value="health">Health</SelectItem>
-					<SelectItem value="education">Education</SelectItem>
-					<SelectItem value="gift">Gift</SelectItem>
-					<SelectItem value="other">other</SelectItem>
-				</SelectGroup>
+				{label === 'expense' ? (
+					<SelectGroup>
+						<SelectItem value="food">Food</SelectItem>
+						<SelectItem value="social-life">Social Life</SelectItem>
+						<SelectItem value="pets">Pets</SelectItem>
+						<SelectItem value="transport">Transport</SelectItem>
+						<SelectItem value="culture">Culture</SelectItem>
+						<SelectItem value="household">Household</SelectItem>
+						<SelectItem value="apparel">Apparel</SelectItem>
+						<SelectItem value="beauty">Beauty</SelectItem>
+						<SelectItem value="health">Health</SelectItem>
+						<SelectItem value="education">Education</SelectItem>
+						<SelectItem value="gift">Gift</SelectItem>
+						<SelectItem value="other">Other</SelectItem>
+					</SelectGroup>
+				) : (
+					<SelectGroup>
+						<SelectItem value="allowance">Allowance</SelectItem>
+						<SelectItem value="salary">Salary</SelectItem>
+						<SelectItem value="bonus">Bonus</SelectItem>
+						<SelectItem value="petty-cash">Petty Cash</SelectItem>
+						<SelectItem value="other">Other</SelectItem>
+					</SelectGroup>
+				)}
 			</SelectContent>
 		</Select>
 	);

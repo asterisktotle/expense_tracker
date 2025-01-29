@@ -1,6 +1,6 @@
 'use client';
 import { GlobalContext } from '../context/GlobalContext';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 const Summary = () => {
 	const context = useContext(GlobalContext);
 
@@ -8,6 +8,10 @@ const Summary = () => {
 		throw new Error('AddTransaction must be used within a GlobalProvider');
 	}
 	const { transactions } = context;
+
+	useEffect(() => {
+		console.log('Transaction updated: ', transactions);
+	}, [transactions]);
 
 	const expenses = transactions.filter(
 		(transaction) => transaction.label === 'expense'
