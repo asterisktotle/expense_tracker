@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { GlobalContext } from '../context/GlobalContext';
 import { SelectCategory } from './SelectCategory';
 import { CategoryType } from '../category/categorytype';
@@ -72,6 +72,13 @@ export default function FormTransaction({
 			category: '',
 		},
 	});
+
+	// When user changes the tab, the form will reset
+	useEffect(() => {
+		setDetails('');
+		setAmount(0);
+		setCategory('');
+	}, [transactLabel]);
 
 	return (
 		<div className="flex flex-col">

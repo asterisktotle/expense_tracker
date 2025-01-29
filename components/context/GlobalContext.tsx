@@ -62,6 +62,7 @@ const GlobalState = ({ children }: { children: ReactNode }) => {
 			...prevTransactions,
 			newTransaction,
 		]);
+
 		// Reset the form
 		setAmount(0);
 		setDetails('');
