@@ -67,18 +67,63 @@ export function PieSummary() {
 			label: 'Food',
 			color: 'hsl(var(--chart-1))',
 		},
+		'social-life': {
+			label: 'Social Life',
+			color: 'hsl(341, 100%, 85%)',
+		},
 		pets: {
 			label: 'Pets',
 			color: 'hsl(var(--chart-2))',
-		},
-		beauty: {
-			label: 'Beauty',
-			color: 'hsl(var(--chart-3))',
 		},
 		transport: {
 			label: 'Transport',
 			color: 'hsl(var(--chart-4))',
 		},
+		culture: {
+			label: 'Culture',
+			color: 'hsl(109, 100%, 86%)',
+		},
+		beauty: {
+			label: 'Beauty',
+			color: 'hsl(var(--chart-3))',
+		},
+		household: {
+			label: 'Household',
+			color: 'hsl(231, 100%, 89%)',
+		},
+		apparel: {
+			label: 'Apparel',
+			color: 'hsl(253, 100%, 67%)',
+		},
+		health: {
+			label: 'Health',
+			color: 'hsl(123, 100%, 68%)',
+		},
+		education: {
+			label: 'Health',
+			color: 'hsl(220, 100%, 72%)',
+		},
+		gift: {
+			label: 'Gift',
+			color: 'hsl(277, 100%, 60%)',
+		},
+		allowance: {
+			label: 'allowance',
+			color: 'hsl(56, 100%, 63%)',
+		},
+		bonus: {
+			label: 'bonus',
+			color: 'hsl(92, 100%, 88%)',
+		},
+		salary: {
+			label: 'Salary',
+			color: 'hsl(31, 100%, 55%)',
+		},
+		'petty-cash': {
+			label: 'Petty Cash',
+			color: 'hsl(247, 24%, 51%)',
+		},
+
 		other: {
 			label: 'Other',
 			color: 'hsl(var(--chart-5))',
@@ -98,7 +143,7 @@ export function PieSummary() {
 				>
 					<PieChart>
 						<ChartTooltip
-							content={<ChartTooltipContent nameKey="browser" hideLabel />}
+							content={<ChartTooltipContent nameKey="category" hideLabel />}
 						/>
 						<Pie
 							data={chartDatas && chartDatas.length > 0 ? chartDatas : data}
