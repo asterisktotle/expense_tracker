@@ -13,7 +13,7 @@ const Main = () => {
 					<h1>Expense Tracker</h1> <AddTransaction />
 				</header>
 			</div>
-			<div className="flex  flex-col gap-3 items-center ">
+			<div className="flex  flex-col gap-3 items-center">
 				<Summary />
 				<PieSummary />
 			</div>

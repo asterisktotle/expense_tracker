@@ -28,6 +28,11 @@ interface GlobalContextType {
 	setLabel: (value: string) => void;
 	handleAddTransaction: (data: TransactionInputType) => void;
 	transactions: TransactionType[];
+	deleteTransaction: (id: number) => void;
+	editTransaction: (
+		selectedTransact: EditedTransactionDataProps,
+		index: number
+	) => void;
 }
 
 interface TransactionDataProps {
@@ -35,6 +40,12 @@ interface TransactionDataProps {
 	amount: number;
 	category: string;
 	label: string;
+}
+
+interface EditedTransactionDataProps {
+	details: string;
+	amount: number;
+	category: string;
 }
 
 export const GlobalContext = createContext<GlobalContextType | null>(null);
@@ -69,6 +80,33 @@ const GlobalState = ({ children }: { children: ReactNode }) => {
 		setCategory('');
 	};
 
+	const deleteTransaction = (id: number) => {
+		setTransactions((prevTransact) =>
+			prevTransact.filter((transact) => transact.id !== id)
+		);
+	};
+
+	const editTransaction = (
+		selectedTransact: EditedTransactionDataProps,
+		index: number
+	) => {
+		setTransactions((prevTransact) =>
+			prevTransact.map((transact, i) =>
+				i === index
+					? {
+							id: transactions[index].id,
+							details: selectedTransact.details,
+							amount: selectedTransact.amount,
+							category: selectedTransact.category,
+							label: transactions[index].label,
+					  }
+					: transact
+			)
+		);
+
+		console.log('edit saved');
+	};
+
 	return (
 		<GlobalContext.Provider
 			value={{
@@ -82,6 +120,8 @@ const GlobalState = ({ children }: { children: ReactNode }) => {
 				transactions,
 				label,
 				setLabel,
+				deleteTransaction,
+				editTransaction,
 			}}
 		>
 			{children}

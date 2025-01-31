@@ -33,7 +33,7 @@ export default function AddTransaction() {
 					Add Transaction
 				</Button>
 			</DialogTrigger>
-			<DialogContent className=" h-fit sm:max-w-[425px]">
+			<DialogContent className=" h-fit sm:max-w-[425px] w-[25rem] rounded-lg">
 				<DialogHeader>
 					<DialogTitle>Add New Transaction</DialogTitle>
 					<DialogDescription>{null}</DialogDescription>
